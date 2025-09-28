@@ -47,6 +47,12 @@ export default {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
         },
+        // AI Theme Colors
+        "ai-blue": "hsl(var(--ai-blue))",
+        "ai-blue-dark": "hsl(var(--ai-blue-dark))",
+        "ai-teal": "hsl(var(--ai-teal))",
+        "ai-surface": "hsl(var(--ai-surface))",
+        "ai-surface-elevated": "hsl(var(--ai-surface-elevated))",
         sidebar: {
           DEFAULT: "hsl(var(--sidebar-background))",
           foreground: "hsl(var(--sidebar-foreground))",
