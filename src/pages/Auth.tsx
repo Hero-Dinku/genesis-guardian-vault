@@ -16,7 +16,11 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '
 const signUpSchema = z.object({
   email: z.string().email('Please enter a valid email address'),
   password: z.string().min(6, 'Password must be at least 6 characters'),
+  confirmPassword: z.string().min(6, 'Password confirmation is required'),
   displayName: z.string().min(2, 'Display name must be at least 2 characters'),
+}).refine((data) => data.password === data.confirmPassword, {
+  message: "Passwords don't match",
+  path: ["confirmPassword"],
 });
 
 const signInSchema = z.object({
@@ -37,6 +41,7 @@ const Auth = () => {
     defaultValues: {
       email: '',
       password: '',
+      confirmPassword: '',
       displayName: '',
     },
   });
@@ -361,6 +366,24 @@ const Auth = () => {
                           <Input 
                             type="password" 
                             placeholder="Create a password (min 6 characters)"
+                            {...field}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  
+                  <FormField
+                    control={signUpForm.control}
+                    name="confirmPassword"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Confirm Password</FormLabel>
+                        <FormControl>
+                          <Input 
+                            type="password" 
+                            placeholder="Confirm your password"
                             {...field}
                           />
                         </FormControl>
