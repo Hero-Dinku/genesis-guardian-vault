@@ -22,7 +22,7 @@ const Hero = () => {
           {/* Hero Content */}
           <div className="mb-12">
             <h1 className="text-5xl md:text-7xl font-bold text-foreground mb-6 leading-tight">
-              Automate Your Web Development with{" "}
+              Smarter Business with{" "}
               <span className="text-primary">AI Agents</span>
             </h1>
             <p className="text-xl md:text-2xl text-muted-foreground mb-8 max-w-3xl mx-auto leading-relaxed">
