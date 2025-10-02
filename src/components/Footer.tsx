@@ -1,4 +1,4 @@
-import { Facebook, Twitter, Instagram } from 'lucide-react';
+import { Facebook, Twitter, Instagram, Phone } from 'lucide-react';
 
 const Footer = () => {
   return (
@@ -12,7 +12,7 @@ const Footer = () => {
           {/* Social Media Links */}
           <div className="flex justify-center gap-6 mt-6">
             <a 
-              href="https://facebook.com" 
+              href="https://facebook.com/yourpage" 
               target="_blank" 
               rel="noopener noreferrer"
               className="hover-scale text-muted-foreground hover:text-primary transition-colors"
@@ -21,22 +21,31 @@ const Footer = () => {
               <Facebook size={24} />
             </a>
             <a 
-              href="https://twitter.com" 
+              href="https://x.com/yourhandle" 
               target="_blank" 
               rel="noopener noreferrer"
               className="hover-scale text-muted-foreground hover:text-primary transition-colors"
-              aria-label="Twitter"
+              aria-label="X"
             >
               <Twitter size={24} />
             </a>
             <a 
-              href="https://instagram.com" 
+              href="https://instagram.com/yourprofile" 
               target="_blank" 
               rel="noopener noreferrer"
               className="hover-scale text-muted-foreground hover:text-primary transition-colors"
               aria-label="Instagram"
             >
               <Instagram size={24} />
+            </a>
+            <a 
+              href="https://wa.me/1234567890" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="hover-scale text-muted-foreground hover:text-primary transition-colors"
+              aria-label="WhatsApp"
+            >
+              <Phone size={24} />
             </a>
           </div>
         </div>
