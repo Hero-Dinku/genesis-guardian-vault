@@ -51,6 +51,8 @@ export default {
         "ai-blue": "hsl(var(--ai-blue))",
         "ai-blue-dark": "hsl(var(--ai-blue-dark))",
         "ai-teal": "hsl(var(--ai-teal))",
+        "ai-purple": "hsl(var(--ai-purple))",
+        "ai-green": "hsl(var(--ai-green))",
         "ai-surface": "hsl(var(--ai-surface))",
         "ai-surface-elevated": "hsl(var(--ai-surface-elevated))",
         sidebar: {
