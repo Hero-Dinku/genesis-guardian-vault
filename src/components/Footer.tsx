@@ -1,4 +1,4 @@
-import { Facebook, Twitter, Instagram, Phone } from 'lucide-react';
+import { Facebook, X, Instagram, Phone } from 'lucide-react';
 
 const Footer = () => {
   return (
@@ -27,7 +27,7 @@ const Footer = () => {
               className="hover-scale text-muted-foreground hover:text-primary transition-colors"
               aria-label="X"
             >
-              <Twitter size={24} />
+              <X size={24} />
             </a>
             <a 
               href="https://instagram.com/yourprofile" 
