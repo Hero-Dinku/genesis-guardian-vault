@@ -1,6 +1,9 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.39.3';
 
 const OPENAI_API_KEY = Deno.env.get('OPENAI_API_KEY');
+const SUPABASE_URL = Deno.env.get('SUPABASE_URL')!;
+const SUPABASE_ANON_KEY = Deno.env.get('SUPABASE_ANON_KEY')!;
 
 serve(async (req) => {
   const { headers } = req;
@@ -14,7 +17,31 @@ serve(async (req) => {
     return new Response("OpenAI API key not configured", { status: 500 });
   }
 
-  const { socket, response } = Deno.upgradeWebSocket(req);
+  // Get auth token from Sec-WebSocket-Protocol header (sent as subprotocol)
+  const protocols = headers.get('sec-websocket-protocol') || '';
+  const tokenMatch = protocols.split(',').find(p => p.trim().startsWith('websocket.'));
+  const token = tokenMatch ? protocols.split(',').find(p => p.trim() !== 'websocket')?.trim() : null;
+
+  if (!token) {
+    return new Response("Missing authentication token", { status: 401 });
+  }
+
+  // Verify authentication
+  const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
+    global: { headers: { authorization: `Bearer ${token}` } }
+  });
+
+  const { data: { user }, error } = await supabase.auth.getUser();
+  if (error || !user) {
+    console.error('Authentication failed:', error);
+    return new Response("Unauthorized", { status: 401 });
+  }
+
+  console.log('Authenticated user:', user.id);
+
+  const { socket, response } = Deno.upgradeWebSocket(req, {
+    protocol: 'websocket'
+  });
   
   let openAISocket: WebSocket | null = null;
 
