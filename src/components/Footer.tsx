@@ -12,7 +12,7 @@ const Footer = () => {
           {/* Social Media Links */}
           <div className="flex justify-center gap-6 mt-6">
             <a 
-              href="https://facebook.com/yourpage" 
+              href="https://www.facebook.com/" 
               target="_blank" 
               rel="noopener noreferrer"
               className="hover-scale text-muted-foreground hover:text-primary transition-colors"
