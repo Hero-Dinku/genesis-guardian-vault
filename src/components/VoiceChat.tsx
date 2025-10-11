@@ -1,28 +1,141 @@
 import { useState, useEffect, useRef } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
-import { Mic, MicOff, Phone } from 'lucide-react';
+import { Mic, MicOff, Phone, Users } from 'lucide-react';
 import { AudioRecorder, encodeAudioForAPI, playAudioData, clearAudioQueue } from '@/utils/RealtimeAudio';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
+import { useAuth } from '@/hooks/useAuth';
+import type { RealtimeChannel } from '@supabase/supabase-js';
 
 interface VoiceChatProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
 }
 
+interface Message {
+  id: string;
+  role: 'user' | 'assistant' | 'system';
+  content: string;
+  created_at: string;
+  user_id?: string;
+}
+
 export const VoiceChat = ({ open, onOpenChange }: VoiceChatProps) => {
   const [isConnected, setIsConnected] = useState(false);
   const [isSpeaking, setIsSpeaking] = useState(false);
-  const [transcript, setTranscript] = useState<string[]>([]);
+  const [messages, setMessages] = useState<Message[]>([]);
+  const [conversationId, setConversationId] = useState<string | null>(null);
+  const [activeUsers, setActiveUsers] = useState(0);
   const wsRef = useRef<WebSocket | null>(null);
   const recorderRef = useRef<AudioRecorder | null>(null);
   const audioContextRef = useRef<AudioContext | null>(null);
   const sessionStartedRef = useRef(false);
+  const channelRef = useRef<RealtimeChannel | null>(null);
   const { toast } = useToast();
+  const { user } = useAuth();
+
+  const createOrJoinConversation = async () => {
+    // Create or get the default conversation room
+    const { data: existingConversation } = await supabase
+      .from('conversations')
+      .select('*')
+      .eq('name', 'Voice Chat Room')
+      .single();
+
+    if (existingConversation) {
+      return existingConversation.id;
+    }
+
+    const { data: newConversation, error } = await supabase
+      .from('conversations')
+      .insert([{ name: 'Voice Chat Room', created_by: user?.id }])
+      .select()
+      .single();
+
+    if (error) throw error;
+    return newConversation.id;
+  };
+
+  const subscribeToConversation = (convId: string) => {
+    // Subscribe to realtime updates
+    const channel = supabase
+      .channel(`conversation:${convId}`)
+      .on(
+        'postgres_changes',
+        {
+          event: 'INSERT',
+          schema: 'public',
+          table: 'conversation_messages',
+          filter: `conversation_id=eq.${convId}`,
+        },
+        (payload) => {
+          console.log('New message:', payload.new);
+          setMessages((prev) => [...prev, payload.new as Message]);
+        }
+      )
+      .on('presence', { event: 'sync' }, () => {
+        const state = channel.presenceState();
+        setActiveUsers(Object.keys(state).length);
+      })
+      .on('presence', { event: 'join' }, ({ key }) => {
+        console.log('User joined:', key);
+      })
+      .on('presence', { event: 'leave' }, ({ key }) => {
+        console.log('User left:', key);
+      })
+      .subscribe(async (status) => {
+        if (status === 'SUBSCRIBED') {
+          await channel.track({
+            user_id: user?.id,
+            online_at: new Date().toISOString(),
+          });
+        }
+      });
+
+    channelRef.current = channel;
+  };
+
+  const saveMessage = async (role: 'user' | 'assistant', content: string) => {
+    if (!conversationId) return;
+
+    const { error } = await supabase
+      .from('conversation_messages')
+      .insert([
+        {
+          conversation_id: conversationId,
+          user_id: user?.id,
+          role,
+          content,
+          message_type: 'audio_transcript',
+        },
+      ]);
+
+    if (error) {
+      console.error('Error saving message:', error);
+    }
+  };
 
   const startConversation = async () => {
     try {
+      // Create or join conversation
+      const convId = await createOrJoinConversation();
+      setConversationId(convId);
+
+      // Load existing messages
+      const { data: existingMessages } = await supabase
+        .from('conversation_messages')
+        .select('*')
+        .eq('conversation_id', convId)
+        .order('created_at', { ascending: true });
+
+      if (existingMessages) {
+        setMessages(existingMessages as Message[]);
+      }
+
+      // Subscribe to realtime updates
+      subscribeToConversation(convId);
+
       // Request microphone access
       await navigator.mediaDevices.getUserMedia({ audio: true });
 
@@ -106,17 +219,18 @@ export const VoiceChat = ({ open, onOpenChange }: VoiceChatProps) => {
         }
 
         if (data.type === 'response.audio_transcript.delta') {
-          setTranscript(prev => {
-            const newTranscript = [...prev];
-            if (newTranscript.length > 0 && data.item_id === newTranscript[newTranscript.length - 1]) {
-              return newTranscript;
-            }
-            return [...newTranscript, data.delta];
-          });
+          // Accumulate AI response and save when complete
+          const fullResponse = data.delta;
+          if (fullResponse && fullResponse.trim()) {
+            await saveMessage('assistant', fullResponse);
+          }
         }
 
         if (data.type === 'conversation.item.input_audio_transcription.completed') {
-          setTranscript(prev => [...prev, `You: ${data.transcript}`]);
+          // Save user's speech to database
+          if (data.transcript && data.transcript.trim()) {
+            await saveMessage('user', data.transcript);
+          }
         }
 
         if (data.type === 'error') {
@@ -167,10 +281,15 @@ export const VoiceChat = ({ open, onOpenChange }: VoiceChatProps) => {
       audioContextRef.current.close();
       audioContextRef.current = null;
     }
+    if (channelRef.current) {
+      supabase.removeChannel(channelRef.current);
+      channelRef.current = null;
+    }
     clearAudioQueue();
     setIsConnected(false);
     setIsSpeaking(false);
-    setTranscript([]);
+    setMessages([]);
+    setActiveUsers(0);
     sessionStartedRef.current = false;
   };
 
@@ -190,7 +309,15 @@ export const VoiceChat = ({ open, onOpenChange }: VoiceChatProps) => {
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-[500px]">
         <DialogHeader>
-          <DialogTitle>Voice Chat</DialogTitle>
+          <DialogTitle className="flex items-center justify-between">
+            <span>Voice Chat Room</span>
+            {isConnected && (
+              <div className="flex items-center gap-2 text-sm font-normal text-muted-foreground">
+                <Users className="w-4 h-4" />
+                <span>{activeUsers} active</span>
+              </div>
+            )}
+          </DialogTitle>
         </DialogHeader>
         
         <div className="flex flex-col items-center gap-6 py-6">
@@ -220,11 +347,21 @@ export const VoiceChat = ({ open, onOpenChange }: VoiceChatProps) => {
             </p>
           </div>
 
-          <div className="w-full max-h-48 overflow-y-auto space-y-2 px-4">
-            {transcript.map((text, i) => (
-              <p key={i} className="text-sm text-muted-foreground">
-                {text}
-              </p>
+          <div className="w-full max-h-64 overflow-y-auto space-y-3 px-4">
+            {messages.map((msg) => (
+              <div
+                key={msg.id}
+                className={`p-3 rounded-lg ${
+                  msg.role === 'assistant'
+                    ? 'bg-primary/10 text-foreground'
+                    : 'bg-muted text-foreground'
+                }`}
+              >
+                <p className="text-xs font-semibold mb-1">
+                  {msg.role === 'assistant' ? 'AI' : 'User'}
+                </p>
+                <p className="text-sm">{msg.content}</p>
+              </div>
             ))}
           </div>
 
