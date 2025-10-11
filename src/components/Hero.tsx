@@ -27,8 +27,8 @@ const Hero = () => {
         <div className="max-w-4xl mx-auto">
           {/* Hero Content */}
           <div className="mb-12">
-            <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-6 leading-tight text-white">
-              Seamless AI Solutions for Smarter Business Growth
+            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 leading-tight text-white">
+              AI Solutions for Smarter Growth
             </h1>
             <p className="text-xl md:text-2xl text-muted-foreground mb-8 max-w-3xl mx-auto leading-relaxed">
               From code generation to content creation, our intelligent agents
