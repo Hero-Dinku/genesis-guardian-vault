@@ -1,10 +1,16 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
+import { useToast } from "@/components/ui/use-toast";
 import aiBrain from "@/assets/ai-brain.png";
 import { VoiceChat } from "./VoiceChat";
+import { useAuth } from "@/hooks/useAuth";
 
 const Hero = () => {
   const [voiceChatOpen, setVoiceChatOpen] = useState(false);
+  const { user } = useAuth();
+  const { toast } = useToast();
+  const navigate = useNavigate();
 
   return (
     <section className="min-h-screen flex items-center justify-center relative overflow-hidden bg-gradient-to-br from-background via-ai-surface to-ai-surface-elevated">
@@ -34,7 +40,18 @@ const Hero = () => {
                 variant="default" 
                 size="lg" 
                 className="bg-primary hover:bg-ai-blue-dark text-primary-foreground px-8 py-4 text-lg"
-                onClick={() => setVoiceChatOpen(true)}
+                onClick={() => {
+                  if (!user) {
+                    toast({
+                      title: "Sign in required",
+                      description: "Please create an account or sign in to use voice chat",
+                      variant: "destructive",
+                    });
+                    navigate('/auth');
+                  } else {
+                    setVoiceChatOpen(true);
+                  }
+                }}
               >
                 Start Voice Chat
               </Button>
