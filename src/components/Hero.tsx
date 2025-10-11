@@ -27,7 +27,7 @@ const Hero = () => {
         <div className="max-w-4xl mx-auto">
           {/* Hero Content */}
           <div className="mb-12">
-            <h1 className="text-5xl md:text-7xl font-bold mb-6 leading-tight">
+            <h1 className="text-3xl md:text-5xl lg:text-6xl font-bold mb-6 leading-tight">
               <span className="text-white">Seamless AI Solutions for{" "}</span>
               <span className="gradient-text">Smarter Business Growth</span>
             </h1>
