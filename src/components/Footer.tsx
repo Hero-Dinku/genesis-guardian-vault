@@ -7,7 +7,7 @@ const Footer = () => {
         <div className="text-center text-muted-foreground">
           <p className="mb-2">© 2025 Asmex AI. All rights reserved.</p>
           <p className="text-sm">1775 Tysons Blvd Suite 500, Tysons, VA 22102</p>
-          <p className="text-sm mb-4">202-555-3441</p>
+          <p className="text-sm mb-4">202-556-1441</p>
           
           {/* Social Media Links */}
           <div className="flex justify-center gap-6 mt-6">
@@ -39,7 +39,7 @@ const Footer = () => {
               <Instagram size={24} />
             </a>
             <a 
-              href="https://wa.me/1234567890" 
+              href="https://wa.me/12025561441" 
               target="_blank" 
               rel="noopener noreferrer"
               className="hover-scale text-muted-foreground hover:text-primary transition-colors"
