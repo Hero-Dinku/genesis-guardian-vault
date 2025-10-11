@@ -28,14 +28,10 @@ serve(async (req) => {
 
   socket.onopen = () => {
     // Connect to OpenAI Realtime API
+    // Note: Deno WebSocket doesn't support custom headers, so we pass auth as a protocol
     openAISocket = new WebSocket(
       "wss://api.openai.com/v1/realtime?model=gpt-4o-realtime-preview-2024-10-01",
-      {
-        headers: {
-          "Authorization": `Bearer ${OPENAI_API_KEY}`,
-          "OpenAI-Beta": "realtime=v1",
-        },
-      }
+      [`realtime`, `openai-insecure-api-key.${OPENAI_API_KEY}`, `openai-beta.realtime=v1`]
     );
 
     openAISocket.onmessage = (event) => {
