@@ -23,26 +23,15 @@ export const VoiceChat = ({ open, onOpenChange }: VoiceChatProps) => {
 
   const startConversation = async () => {
     try {
-      // Get current session for authentication
-      const { data: { session } } = await supabase.auth.getSession();
-      if (!session) {
-        toast({
-          title: "Authentication Required",
-          description: "Please sign in to use voice chat",
-          variant: "destructive",
-        });
-        return;
-      }
-
       // Request microphone access
       await navigator.mediaDevices.getUserMedia({ audio: true });
 
       // Initialize audio context
       audioContextRef.current = new AudioContext({ sampleRate: 24000 });
 
-      // Connect to WebSocket with authentication
+      // Connect to WebSocket (no authentication required)
       const wsUrl = `wss://ooqshqbvcujsysevvklx.supabase.co/functions/v1/realtime-chat`;
-      const ws = new WebSocket(wsUrl, ['websocket', session.access_token]);
+      const ws = new WebSocket(wsUrl);
       wsRef.current = ws;
 
       ws.onopen = () => {
