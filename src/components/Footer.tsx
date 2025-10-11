@@ -21,7 +21,7 @@ const Footer = () => {
               <Facebook size={24} />
             </a>
             <a 
-              href="https://x.com/yourhandle" 
+              href="https://x.com/" 
               target="_blank" 
               rel="noopener noreferrer"
               className="hover-scale text-muted-foreground hover:text-primary transition-colors"
@@ -30,7 +30,7 @@ const Footer = () => {
               <X size={24} />
             </a>
             <a 
-              href="https://instagram.com/yourprofile" 
+              href="https://www.instagram.com/" 
               target="_blank" 
               rel="noopener noreferrer"
               className="hover-scale text-muted-foreground hover:text-primary transition-colors"
@@ -39,7 +39,7 @@ const Footer = () => {
               <Instagram size={24} />
             </a>
             <a 
-              href="https://wa.me/12025561441" 
+              href="https://web.whatsapp.com/" 
               target="_blank" 
               rel="noopener noreferrer"
               className="hover-scale text-muted-foreground hover:text-primary transition-colors"
