@@ -27,9 +27,9 @@ const Hero = () => {
         <div className="max-w-4xl mx-auto">
           {/* Hero Content */}
           <div className="mb-12">
-            <h1 className="text-5xl md:text-7xl font-bold text-foreground mb-6 leading-tight">
-              Smarter Business with{" "}
-              <span className="text-primary">AI Agents</span>
+            <h1 className="text-5xl md:text-7xl font-bold mb-6 leading-tight">
+              <span className="text-white">Smarter Business with{" "}</span>
+              <span className="gradient-text">AI Agents</span>
             </h1>
             <p className="text-xl md:text-2xl text-muted-foreground mb-8 max-w-3xl mx-auto leading-relaxed">
               From code generation to content creation, our intelligent agents
