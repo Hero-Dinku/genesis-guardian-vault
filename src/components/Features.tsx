@@ -20,11 +20,16 @@ const Features = () => {
   ];
 
   return (
-    <section id="features" className="py-20 bg-background">
-      <div className="container mx-auto px-6">
-        <div className="text-center mb-16">
+    <section id="features" className="py-20 bg-background relative overflow-hidden">
+      {/* Animated Background */}
+      <div className="absolute inset-0 bg-gradient-to-b from-transparent via-ai-blue/5 to-transparent pointer-events-none" />
+      <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-ai-blue/10 rounded-full blur-3xl animate-pulse" />
+      <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-ai-purple/10 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '1s' }} />
+      
+      <div className="container mx-auto px-6 relative z-10">
+        <div className="text-center mb-16 animate-fade-in">
           <h2 className="text-4xl md:text-5xl font-bold text-foreground mb-6">
-            How Our AI Agents Can Help You
+            How Our <span className="gradient-text">AI Agents</span> Can Help You
           </h2>
         </div>
         
@@ -32,17 +37,23 @@ const Features = () => {
           {features.map((feature, index) => (
             <div 
               key={index}
-              className="bg-ai-surface rounded-xl p-8 border border-border hover:border-primary/50 transition-all duration-300"
+              className="group relative bg-ai-surface rounded-2xl p-8 border border-border hover:border-primary/50 transition-all duration-500 hover-lift animate-slide-up"
+              style={{ animationDelay: `${index * 0.15}s` }}
             >
-              <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mb-6">
-                <feature.icon className="w-8 h-8 text-primary" />
+              {/* Glow effect on hover */}
+              <div className="absolute inset-0 bg-gradient-to-br from-ai-blue/0 via-ai-purple/0 to-ai-teal/0 group-hover:from-ai-blue/10 group-hover:via-ai-purple/10 group-hover:to-ai-teal/10 rounded-2xl transition-all duration-500" />
+              
+              <div className="relative z-10">
+                <div className="w-16 h-16 bg-gradient-to-br from-ai-blue to-ai-purple rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300 glow-effect">
+                  <feature.icon className="w-8 h-8 text-white" />
+                </div>
+                <h3 className="text-xl font-semibold text-foreground mb-4 group-hover:text-primary transition-colors">
+                  {feature.title}
+                </h3>
+                <p className="text-muted-foreground leading-relaxed">
+                  {feature.description}
+                </p>
               </div>
-              <h3 className="text-xl font-semibold text-foreground mb-4">
-                {feature.title}
-              </h3>
-              <p className="text-muted-foreground leading-relaxed">
-                {feature.description}
-              </p>
             </div>
           ))}
         </div>

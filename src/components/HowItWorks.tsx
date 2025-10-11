@@ -18,23 +18,39 @@ const HowItWorks = () => {
   ];
 
   return (
-    <section id="how-it-works" className="py-20 bg-ai-surface">
-      <div className="container mx-auto px-6">
-        <div className="text-center mb-16">
+    <section id="how-it-works" className="py-20 bg-ai-surface relative overflow-hidden">
+      {/* Decorative Elements */}
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_50%,hsl(195_100%_50%/0.1),transparent_50%)]" />
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_70%_50%,hsl(270_80%_60%/0.1),transparent_50%)]" />
+      
+      <div className="container mx-auto px-6 relative z-10">
+        <div className="text-center mb-16 animate-fade-in">
           <h2 className="text-4xl md:text-5xl font-bold text-foreground mb-6">
-            How It Works
+            How It <span className="gradient-text">Works</span>
           </h2>
         </div>
         
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-12 max-w-6xl mx-auto">
           {steps.map((step, index) => (
-            <div key={index} className="text-center">
-              <div className="w-16 h-16 bg-primary rounded-full flex items-center justify-center mx-auto mb-6">
-                <span className="text-2xl font-bold text-primary-foreground">
-                  {step.number}
-                </span>
+            <div 
+              key={index} 
+              className="text-center group animate-scale-in"
+              style={{ animationDelay: `${index * 0.2}s` }}
+            >
+              {/* Number Badge with Glow */}
+              <div className="relative inline-block mb-6">
+                <div className="w-20 h-20 bg-gradient-to-br from-ai-blue to-ai-purple rounded-full flex items-center justify-center glow-effect group-hover:glow-effect-lg transition-all duration-300 group-hover:scale-110">
+                  <span className="text-3xl font-bold text-white">
+                    {step.number}
+                  </span>
+                </div>
+                {/* Connecting Line (except last) */}
+                {index < steps.length - 1 && (
+                  <div className="hidden md:block absolute top-10 left-20 w-32 lg:w-48 h-0.5 bg-gradient-to-r from-ai-blue/50 to-transparent" />
+                )}
               </div>
-              <h3 className="text-xl font-semibold text-foreground mb-4">
+              
+              <h3 className="text-xl font-semibold text-foreground mb-4 group-hover:text-primary transition-colors">
                 {step.title}
               </h3>
               <p className="text-muted-foreground leading-relaxed">
