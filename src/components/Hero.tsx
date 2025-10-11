@@ -27,7 +27,7 @@ const Hero = () => {
         <div className="max-w-4xl mx-auto">
           {/* Hero Content */}
           <div className="mb-12">
-            <h1 className="text-3xl md:text-5xl lg:text-6xl font-bold mb-6 leading-snug text-white">
+            <h1 className="text-3xl md:text-5xl lg:text-6xl font-bold mb-6 leading-snug text-white break-words">
               AI Solutions for Smarter Growth
             </h1>
             <p className="text-xl md:text-2xl text-muted-foreground mb-8 max-w-3xl mx-auto leading-relaxed">
