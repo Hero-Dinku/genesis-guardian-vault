@@ -18,11 +18,10 @@ serve(async (req) => {
     return new Response("Expected WebSocket connection", { status: 400 });
   }
 
-  // Verify authentication
+  // Optional authentication (function is public); log when missing
   const authHeader = headers.get('authorization');
   if (!authHeader) {
-    console.error('Unauthorized: Missing authorization header');
-    return new Response("Unauthorized: Authentication required", { status: 401 });
+    console.warn('Public access: Missing authorization header');
   }
 
   if (!OPENAI_API_KEY) {
@@ -38,10 +37,12 @@ serve(async (req) => {
   socket.onopen = () => {
     // Connect to OpenAI Realtime API
     // Note: Deno WebSocket doesn't support custom headers, so we pass auth as a protocol
-    openAISocket = new WebSocket(
-      "wss://api.openai.com/v1/realtime?model=gpt-4o-realtime-preview-2024-10-01",
-      [`realtime`, `openai-insecure-api-key.${OPENAI_API_KEY}`, `openai-beta.realtime=v1`]
-    );
+      // Deno WebSocket protocols must be RFC6455 tokens - '=' is invalid.
+      // Drop 'openai-beta.realtime=v1' from subprotocols to avoid SyntaxError: Invalid protocol value.
+      openAISocket = new WebSocket(
+        "wss://api.openai.com/v1/realtime?model=gpt-4o-realtime-preview-2024-10-01",
+        ["realtime", `openai-insecure-api-key.${OPENAI_API_KEY}`]
+      );
 
     openAISocket.onmessage = (event) => {
       if (socket.readyState === WebSocket.OPEN) {
