@@ -18,9 +18,18 @@ serve(async (req) => {
     return new Response("Expected WebSocket connection", { status: 400 });
   }
 
+  // Verify authentication
+  const authHeader = headers.get('authorization');
+  if (!authHeader) {
+    console.error('Unauthorized: Missing authorization header');
+    return new Response("Unauthorized: Authentication required", { status: 401 });
+  }
+
   if (!OPENAI_API_KEY) {
     return new Response("OpenAI API key not configured", { status: 500 });
   }
+
+  console.log('Authenticated WebSocket connection established');
 
   const { socket, response } = Deno.upgradeWebSocket(req);
   
