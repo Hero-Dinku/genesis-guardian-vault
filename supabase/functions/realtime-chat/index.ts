@@ -5,6 +5,36 @@ const OPENAI_API_KEY = Deno.env.get('OPENAI_API_KEY');
 const SUPABASE_URL = Deno.env.get('SUPABASE_URL')!;
 const SUPABASE_ANON_KEY = Deno.env.get('SUPABASE_ANON_KEY')!;
 
+// Rate limiting configuration
+const MAX_MESSAGE_SIZE = 10 * 1024; // 10KB max message size
+const RATE_LIMIT_WINDOW = 60 * 1000; // 1 minute window
+const MAX_MESSAGES_PER_WINDOW = 10; // 10 messages per minute
+
+// Simple in-memory rate limiter (use Redis for production)
+const userMessageCounts = new Map<string, { count: number; resetTime: number }>();
+
+function checkRateLimit(userId: string): boolean {
+  const now = Date.now();
+  const userLimit = userMessageCounts.get(userId);
+  
+  if (!userLimit || now > userLimit.resetTime) {
+    userMessageCounts.set(userId, { count: 1, resetTime: now + RATE_LIMIT_WINDOW });
+    return true;
+  }
+  
+  if (userLimit.count >= MAX_MESSAGES_PER_WINDOW) {
+    return false;
+  }
+  
+  userLimit.count++;
+  return true;
+}
+
+function validateMessageSize(message: string): boolean {
+  const size = new TextEncoder().encode(message).length;
+  return size <= MAX_MESSAGE_SIZE;
+}
+
 serve(async (req) => {
   const { headers } = req;
   const upgradeHeader = headers.get("upgrade") || "";
@@ -33,11 +63,9 @@ serve(async (req) => {
 
   const { data: { user }, error } = await supabase.auth.getUser();
   if (error || !user) {
-    console.error('Authentication failed:', error);
+    console.error('Authentication failed');
     return new Response("Unauthorized", { status: 401 });
   }
-
-  console.log('Authenticated user:', user.id);
 
   const { socket, response } = Deno.upgradeWebSocket(req, {
     protocol: 'websocket'
@@ -46,8 +74,6 @@ serve(async (req) => {
   let openAISocket: WebSocket | null = null;
 
   socket.onopen = () => {
-    console.log("Client connected");
-    
     // Connect to OpenAI Realtime API
     openAISocket = new WebSocket(
       "wss://api.openai.com/v1/realtime?model=gpt-4o-realtime-preview-2024-10-01",
@@ -59,16 +85,9 @@ serve(async (req) => {
       }
     );
 
-    openAISocket.onopen = () => {
-      console.log("Connected to OpenAI");
-    };
-
     openAISocket.onmessage = (event) => {
-      const message = event.data;
-      console.log("OpenAI message:", message);
-      
       if (socket.readyState === WebSocket.OPEN) {
-        socket.send(message);
+        socket.send(event.data);
       }
     };
 
@@ -81,7 +100,6 @@ serve(async (req) => {
     };
 
     openAISocket.onclose = () => {
-      console.log("OpenAI connection closed");
       if (socket.readyState === WebSocket.OPEN) {
         socket.close();
       }
@@ -90,7 +108,24 @@ serve(async (req) => {
 
   socket.onmessage = (event) => {
     const message = event.data;
-    console.log("Client message received");
+    
+    // Validate message size
+    if (!validateMessageSize(message)) {
+      socket.send(JSON.stringify({ 
+        type: "error", 
+        message: "Message too large. Maximum size is 10KB" 
+      }));
+      return;
+    }
+    
+    // Check rate limit
+    if (!checkRateLimit(user.id)) {
+      socket.send(JSON.stringify({ 
+        type: "error", 
+        message: "Rate limit exceeded. Please wait before sending more messages" 
+      }));
+      return;
+    }
     
     if (openAISocket && openAISocket.readyState === WebSocket.OPEN) {
       openAISocket.send(message);
@@ -98,7 +133,6 @@ serve(async (req) => {
   };
 
   socket.onclose = () => {
-    console.log("Client disconnected");
     if (openAISocket && openAISocket.readyState === WebSocket.OPEN) {
       openAISocket.close();
     }
