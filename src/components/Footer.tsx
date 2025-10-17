@@ -7,10 +7,14 @@ const Footer = () => {
         <div className="text-center text-muted-foreground">
           <p className="mb-2">© 2025 Asmex AI. All rights reserved.</p>
           <a 
-            href="https://www.google.com/maps?q=1775+Tysons+Blvd+Suite+500,+Tysons,+VA+22102" 
+            href="https://maps.google.com/?q=1775+Tysons+Blvd+Suite+500,+Tysons,+VA+22102" 
             target="_blank"
             rel="noopener noreferrer"
-            className="text-sm hover:text-primary transition-colors inline-block"
+            onClick={(e) => {
+              e.preventDefault();
+              window.open('https://maps.google.com/?q=1775+Tysons+Blvd+Suite+500,+Tysons,+VA+22102', '_blank', 'noopener,noreferrer');
+            }}
+            className="text-sm hover:text-primary transition-colors inline-block cursor-pointer"
           >
             📍 1775 Tysons Blvd Suite 500, Tysons, VA 22102
           </a>
