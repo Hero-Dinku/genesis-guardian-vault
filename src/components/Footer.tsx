@@ -83,7 +83,7 @@ const Footer = () => {
           {/* Map Display */}
           <div className="relative group animate-fade-in">
             <div className="absolute inset-0 bg-gradient-to-br from-primary/20 via-primary/10 to-transparent rounded-lg blur-xl group-hover:blur-2xl transition-all duration-300 opacity-50"></div>
-            <div className="relative rounded-lg overflow-hidden border-2 border-primary/20 shadow-xl h-[350px] hover:border-primary/40 transition-all duration-300 hover:scale-[1.02] hover:shadow-2xl">
+            <div className="relative rounded-lg overflow-hidden border-2 border-primary/20 shadow-xl h-[250px] hover:border-primary/40 transition-all duration-300 hover:scale-[1.02] hover:shadow-2xl">
               <div className="absolute top-4 left-4 z-10 bg-background/90 backdrop-blur-sm px-4 py-2 rounded-full border border-primary/20 shadow-lg">
                 <p className="text-sm font-medium flex items-center gap-2">
                   <MapPin size={16} className="text-primary" />
