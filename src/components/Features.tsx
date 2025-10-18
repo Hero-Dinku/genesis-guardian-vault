@@ -5,17 +5,17 @@ const Features = () => {
     {
       icon: Calendar,
       title: "Calendar & Schedule Management",
-      description: "Our agents can automatically schedule meetings, send invites, and manage your calendar, ensuring you never miss an appointment."
+      description: "Automatically schedule meetings, send invites, and avoid double-booking—ensuring you never miss an appointment."
     },
     {
       icon: Mail,
       title: "AI-Powered Email & Call Handling",
-      description: "Automate responses, summarize long threads, and route incoming emails and calls to the right team members for efficient communication."
+      description: "Automate responses, summarize long email threads, and intelligently route calls to the right team members."
     },
     {
       icon: Users,
       title: "Automated Lead Nurturing",
-      description: "Engage with potential clients, send follow-up information, and schedule consultations, all without manual intervention."
+      description: "Engage potential clients, send personalized follow-ups, and schedule consultations—all without manual intervention."
     },
     {
       icon: Settings,

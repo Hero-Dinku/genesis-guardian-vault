@@ -15,8 +15,11 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '
 
 const signUpSchema = z.object({
   email: z.string().email('Please enter a valid email address'),
-  password: z.string().min(6, 'Password must be at least 6 characters'),
-  confirmPassword: z.string().min(6, 'Password confirmation is required'),
+  password: z.string()
+    .min(8, 'Password must be at least 8 characters')
+    .regex(/[0-9]/, 'Password must include at least one number')
+    .regex(/[^A-Za-z0-9]/, 'Password must include at least one symbol'),
+  confirmPassword: z.string().min(8, 'Password confirmation is required'),
 }).refine((data) => data.password === data.confirmPassword, {
   message: "Passwords don't match",
   path: ["confirmPassword"],
@@ -244,9 +247,9 @@ const Auth = () => {
     <div className="min-h-screen bg-background flex items-center justify-center p-4">
       <Card className="w-full max-w-md">
         <CardHeader>
-          <CardTitle>Welcome</CardTitle>
+          <CardTitle>Create Your Account</CardTitle>
           <CardDescription>
-            Sign in to your account or create a new one
+            Sign in to your account or create a new one to get started
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -346,7 +349,7 @@ const Auth = () => {
                         <FormControl>
                           <Input 
                             type="password" 
-                            placeholder="Create a password (min 6 characters)"
+                            placeholder="8+ characters, including number & symbol"
                             {...field}
                           />
                         </FormControl>
@@ -372,6 +375,13 @@ const Auth = () => {
                       </FormItem>
                     )}
                   />
+                  
+                  <p className="text-xs text-muted-foreground">
+                    By signing up, you agree to our{' '}
+                    <a href="/terms" className="underline hover:text-primary">Terms of Service</a>
+                    {' '}and{' '}
+                    <a href="/privacy" className="underline hover:text-primary">Privacy Policy</a>
+                  </p>
                   
                   <Button type="submit" className="w-full" disabled={isLoading}>
                     {isLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : 'Sign Up'}

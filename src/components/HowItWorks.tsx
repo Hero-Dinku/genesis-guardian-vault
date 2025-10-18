@@ -1,17 +1,22 @@
+import { Link, Settings, Rocket } from "lucide-react";
+
 const HowItWorks = () => {
   const steps = [
     {
       number: "1",
+      icon: Link,
       title: "Integrate Your Accounts",
       description: "Connect your calendar, email, and CRM to our secure AI agent platform in minutes."
     },
     {
-      number: "2", 
+      number: "2",
+      icon: Settings,
       title: "Define Your Workflow",
       description: "Set up custom rules and automations for how the AI should handle your client interactions."
     },
     {
       number: "3",
+      icon: Rocket,
       title: "Let the AI Take Over",
       description: "The agent autonomously manages your client communication, allowing you to focus on high-value tasks."
     }
@@ -37,12 +42,10 @@ const HowItWorks = () => {
               className="text-center group animate-scale-in"
               style={{ animationDelay: `${index * 0.2}s` }}
             >
-              {/* Number Badge with Glow */}
+              {/* Icon Badge with Glow */}
               <div className="relative inline-block mb-6">
                 <div className="w-20 h-20 bg-gradient-to-br from-ai-blue to-ai-purple rounded-full flex items-center justify-center glow-effect group-hover:glow-effect-lg transition-all duration-300 group-hover:scale-110">
-                  <span className="text-3xl font-bold text-white">
-                    {step.number}
-                  </span>
+                  <step.icon className="w-10 h-10 text-white" />
                 </div>
                 {/* Connecting Line (except last) */}
                 {index < steps.length - 1 && (

@@ -37,7 +37,7 @@ const Footer = () => {
                 </p>
               </DialogContent>
             </Dialog>
-            <p className="text-sm mb-4">202-556-1441</p>
+            <p className="text-sm mb-4">+(1) 202-556-1441</p>
             
             {/* Social Media Links */}
             <div className="flex justify-center md:justify-start gap-6 mt-6">
