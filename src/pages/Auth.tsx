@@ -17,7 +17,6 @@ const signUpSchema = z.object({
   email: z.string().email('Please enter a valid email address'),
   password: z.string().min(6, 'Password must be at least 6 characters'),
   confirmPassword: z.string().min(6, 'Password confirmation is required'),
-  displayName: z.string().min(2, 'Display name must be at least 2 characters'),
 }).refine((data) => data.password === data.confirmPassword, {
   message: "Passwords don't match",
   path: ["confirmPassword"],
@@ -42,7 +41,6 @@ const Auth = () => {
       email: '',
       password: '',
       confirmPassword: '',
-      displayName: '',
     },
   });
 
@@ -62,7 +60,7 @@ const Auth = () => {
 
   const onSignUp = async (values: z.infer<typeof signUpSchema>) => {
     setIsLoading(true);
-    const { error } = await signUp(values.email, values.password, values.displayName);
+    const { error } = await signUp(values.email, values.password, '');
     setIsLoading(false);
     
     if (!error) {
@@ -321,23 +319,6 @@ const Auth = () => {
             <TabsContent value="signup" className="space-y-4">
               <Form {...signUpForm}>
                 <form onSubmit={signUpForm.handleSubmit(onSignUp)} className="space-y-4">
-                  <FormField
-                    control={signUpForm.control}
-                    name="displayName"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Display Name</FormLabel>
-                        <FormControl>
-                          <Input 
-                            placeholder="Enter your display name"
-                            {...field}
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  
                   <FormField
                     control={signUpForm.control}
                     name="email"

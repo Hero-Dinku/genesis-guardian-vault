@@ -28,11 +28,10 @@ const Hero = () => {
           {/* Hero Content */}
           <div className="mb-12">
             <h1 className="text-3xl md:text-5xl lg:text-6xl font-bold mb-6 leading-snug text-white break-words">
-              AI Solutions for Smarter Growth
+              Automate Your Business with AI: 10x Productivity
             </h1>
             <p className="text-xl md:text-2xl text-muted-foreground mb-8 max-w-3xl mx-auto leading-relaxed">
-              From code generation to content creation, our intelligent agents
-              handle the heavy lifting so you can focus on innovation.
+              Get a free personalized demo and discover how AI automation can transform your workflow
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Button 

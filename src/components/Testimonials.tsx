@@ -2,13 +2,13 @@ const Testimonials = () => {
   const testimonials = [
     {
       quote: "Asmex AI has completely transformed our workflow. We've cut down our content creation time by 80% and can now focus on strategy and growth.",
-      author: "Jane Doe",
-      position: "Founder, Innovate Co."
+      author: "Sarah Chen",
+      position: "Head of Operations, Innovate Co."
     },
     {
       quote: "The code generation feature is a lifesaver. It handles all the mundane tasks, allowing our developers to work on more complex and creative projects. Highly recommended.",
-      author: "John Smith", 
-      position: "Lead Engineer, DevCorp"
+      author: "Michael Davis", 
+      position: "Director of Engineering, DevZone"
     }
   ];
 

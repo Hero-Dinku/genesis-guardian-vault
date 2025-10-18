@@ -20,6 +20,12 @@ const Stats = () => {
       <div className="absolute inset-0 bg-gradient-to-b from-ai-blue/5 to-transparent pointer-events-none" />
       
       <div className="container mx-auto px-6 relative z-10">
+        <div className="text-center mb-12 animate-fade-in">
+          <h2 className="text-3xl md:text-4xl font-bold text-foreground">
+            Results That <span className="gradient-text">Speak for Themselves</span>
+          </h2>
+        </div>
+        
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-4xl mx-auto">
           {stats.map((stat, index) => (
             <div 

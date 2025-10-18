@@ -1,4 +1,4 @@
-import { Calendar, Mail, Users } from "lucide-react";
+import { Calendar, Mail, Users, Settings } from "lucide-react";
 
 const Features = () => {
   const features = [
@@ -16,6 +16,11 @@ const Features = () => {
       icon: Users,
       title: "Automated Lead Nurturing",
       description: "Engage with potential clients, send follow-up information, and schedule consultations, all without manual intervention."
+    },
+    {
+      icon: Settings,
+      title: "Custom Workflows & Integration",
+      description: "Flexible automation tailored to your business needs. Seamlessly integrate with your existing tools and processes for maximum efficiency."
     }
   ];
 
@@ -33,7 +38,7 @@ const Features = () => {
           </h2>
         </div>
         
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 max-w-7xl mx-auto">
           {features.map((feature, index) => (
             <div 
               key={index}
