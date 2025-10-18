@@ -57,6 +57,7 @@ const Hero = () => {
                 variant="outline" 
                 size="lg" 
                 className="border-primary text-primary hover:bg-primary hover:text-primary-foreground px-8 py-4 text-lg"
+                onClick={() => navigate('/auth')}
               >
                 Learn More
               </Button>
